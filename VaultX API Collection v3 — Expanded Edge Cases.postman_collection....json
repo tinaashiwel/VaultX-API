@@ -1,0 +1,2879 @@
+{
+  "info": {
+    "_postman_id": "86d87a95-f6dc-43b6-9333-176863b8f8c6",
+    "name": "VaultX API Collection v3 — Expanded Edge Cases",
+    "description": "Complete VaultX Postman collection with pm.test() assertions on every request. Upgraded to include strict boundary testing, negative schema validations, authentication bypass checks, and negative values.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "50650306",
+    "_collection_link": "https://go.postman.co/collection/50650306-86d87a95-f6dc-43b6-9333-176863b8f8c6?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "System",
+      "item": [
+        {
+          "name": "S-01 · Health Check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('S-01 · Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('S-01 · success is true', function () {",
+                  "  pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.test('S-01 · status field equals ok', function () {",
+                  "  pm.expect(pm.response.json().status).to.eql('ok');",
+                  "});",
+                  "pm.test('S-01 · uptime is a positive number', function () {",
+                  "  pm.expect(pm.response.json().uptime).to.be.a('number').and.to.be.above(0);",
+                  "});",
+                  "pm.test('S-01 · timestamp is present', function () {",
+                  "  pm.expect(pm.response.json().timestamp).to.be.a('string').and.to.not.be.empty;",
+                  "});",
+                  "pm.test('S-01 · counts.users is a number', function () {",
+                  "  pm.expect(pm.response.json().counts.users).to.be.a('number');",
+                  "});",
+                  "pm.test('S-01 · counts.wallets is a number', function () {",
+                  "  pm.expect(pm.response.json().counts.wallets).to.be.a('number');",
+                  "});",
+                  "pm.test('S-01 · counts.transactions is a number', function () {",
+                  "  pm.expect(pm.response.json().counts.transactions).to.be.a('number');",
+                  "});",
+                  "pm.test('S-01 · response time is under 2000ms', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "health"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "S-02 · Get Snapshot",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('S-02 · Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('S-02 · success is true', function () {",
+                  "  pm.expect(res.success).to.be.true;",
+                  "});",
+                  "pm.test('S-02 · data contains users array', function () {",
+                  "  pm.expect(res.data.users).to.be.an('array');",
+                  "});",
+                  "pm.test('S-02 · data contains wallets array', function () {",
+                  "  pm.expect(res.data.wallets).to.be.an('array');",
+                  "});",
+                  "pm.test('S-02 · data contains transactions array', function () {",
+                  "  pm.expect(res.data.transactions).to.be.an('array');",
+                  "});",
+                  "pm.test('S-02 · seed has 2 users', function () {",
+                  "  pm.expect(res.data.users.length).to.eql(2);",
+                  "});",
+                  "pm.test('S-02 · seed has 6 wallets', function () {",
+                  "  pm.expect(res.data.wallets.length).to.eql(6);",
+                  "});",
+                  "pm.test('S-02 · seed has 9 transactions', function () {",
+                  "  pm.expect(res.data.transactions.length).to.eql(9);",
+                  "});",
+                  "pm.test('S-02 · no user object exposes a password field', function () {",
+                  "  res.data.users.forEach(u => {",
+                  "    pm.expect(u).to.not.have.property('password');",
+                  "  });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/snapshot",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "snapshot"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "S-03 · Reset Database",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('S-03 · Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('S-03 · success is true', function () {",
+                  "  pm.expect(res.success).to.be.true;",
+                  "});",
+                  "pm.test('S-03 · message confirms reset', function () {",
+                  "  pm.expect(res.message).to.be.a('string').and.to.include('reset');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reset",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reset"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "S-04 · Invalid Endpoint Path (404 Global Route)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('S-04 · Status is 404', function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test('S-04 · success is false', function () {",
+                  "  pm.expect(res.success).to.be.false;",
+                  "});",
+                  "pm.test('S-04 · error structured message handles invalid path', function () {",
+                  "  pm.expect(res.error).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/nonexistent-route-path-xyz",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "nonexistent-route-path-xyz"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login — Jordan (user_001)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('Auth · Login status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Auth · success is true', function () {",
+                  "  pm.expect(res.success).to.be.true;",
+                  "});",
+                  "pm.test('Auth · token is returned', function () {",
+                  "  pm.expect(res.data.token).to.be.a('string').and.to.not.be.empty;",
+                  "});",
+                  "pm.test('Auth · response does not expose password', function () {",
+                  "  pm.expect(res.data).to.not.have.property('password');",
+                  "});",
+                  "if (res.data && res.data.token) {",
+                  "  pm.environment.set('token', res.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"qa@vaultx.io\",\n  \"password\": \"Test@1234\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login — Priya (user_002)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('Auth · Login (Priya) status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Auth · success is true', function () {",
+                  "  pm.expect(res.success).to.be.true;",
+                  "});",
+                  "pm.test('Auth · token is returned', function () {",
+                  "  pm.expect(res.data.token).to.be.a('string').and.to.not.be.empty;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"intern@vaultx.io\",\n  \"password\": \"Intern@99\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login — Invalid Password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('Auth · Status is 400 or 401', function () {",
+                  "  pm.expect(pm.response.code).to.be.oneOf([400, 401]);",
+                  "});",
+                  "pm.test('Auth · success is false', function () {",
+                  "  pm.expect(res.success).to.be.false;",
+                  "});",
+                  "pm.test('Auth · contains clear validation error message', function () {",
+                  "  pm.expect(res.error).to.be.a('string').and.to.not.be.empty;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"qa@vaultx.io\",\n  \"password\": \"IncorrectPassword999!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login — Blank Fields Validation",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('Auth · Status is 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('Auth · success is false', function () {",
+                  "  pm.expect(res.success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"\",\n  \"password\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify 2FA — Jordan",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('Auth · 2FA status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Auth · success is true', function () {",
+                  "  pm.expect(res.success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otp\": \"482910\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/verify-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "verify-otp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify 2FA — Incorrect OTP Value",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('Auth · Status is 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('Auth · success is false', function () {",
+                  "  pm.expect(res.success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otp\": \"000000\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/verify-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "verify-otp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Auth · Logout status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Auth · success is true', function () {",
+                  "  pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Protected Route — Access Without Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('Auth · Rejects missing token with 401', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});",
+                  "pm.test('Auth · Unauthorized success is false', function () {",
+                  "  pm.expect(res.success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "U-01 · Get All Users",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('U-01 · Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('U-01 · success is true', function () {",
+                  "  pm.expect(res.success).to.be.true;",
+                  "});",
+                  "pm.test('U-01 · data is an array', function () {",
+                  "  pm.expect(res.data).to.be.an('array');",
+                  "});",
+                  "pm.test('U-01 · count equals 2 on seed data', function () {",
+                  "  pm.expect(res.count).to.eql(2);",
+                  "});",
+                  "pm.test('U-01 · no user exposes a password', function () {",
+                  "  res.data.forEach(u => pm.expect(u).to.not.have.property('password'));",
+                  "});",
+                  "pm.test('U-01 · each user has required fields: id, email, name, role', function () {",
+                  "  res.data.forEach(u => {",
+                  "    pm.expect(u).to.have.all.keys(['id','email','name','avatar','role','createdAt']);",
+                  "  });",
+                  "});",
+                  "pm.test('U-01 · seed includes Jordan Okafor (user_001)', function () {",
+                  "  const jordan = res.data.find(u => u.id === 'user_001');",
+                  "  pm.expect(jordan).to.exist;",
+                  "  pm.expect(jordan.email).to.eql('qa@vaultx.io');",
+                  "});",
+                  "pm.test('U-01 · seed includes Priya Nair (user_002)', function () {",
+                  "  const priya = res.data.find(u => u.id === 'user_002');",
+                  "  pm.expect(priya).to.exist;",
+                  "  pm.expect(priya.email).to.eql('intern@vaultx.io');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "U-02 · Get User by ID — Exists",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('U-02 · Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('U-02 · success is true', function () {",
+                  "  pm.expect(res.success).to.be.true;",
+                  "});",
+                  "pm.test('U-02 · id is user_001', function () {",
+                  "  pm.expect(res.data.id).to.eql('user_001');",
+                  "});",
+                  "pm.test('U-02 · name is Jordan Okafor', function () {",
+                  "  pm.expect(res.data.name).to.eql('Jordan Okafor');",
+                  "});",
+                  "pm.test('U-02 · email is qa@vaultx.io', function () {",
+                  "  pm.expect(res.data.email).to.eql('qa@vaultx.io');",
+                  "});",
+                  "pm.test('U-02 · password is not in response', function () {",
+                  "  pm.expect(res.data).to.not.have.property('password');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/user_001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "user_001"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "U-03 · Get User by ID — Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('U-03 · Status is 404', function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test('U-03 · success is false', function () {",
+                  "  pm.expect(res.success).to.be.false;",
+                  "});",
+                  "pm.test('U-03 · error message is present', function () {",
+                  "  pm.expect(res.error).to.be.a('string').and.to.not.be.empty;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/user_999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "user_999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "U-04 · Create User — Valid",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('U-04 · Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test('U-04 · success is true', function () {",
+                  "  pm.expect(res.success).to.be.true;",
+                  "});",
+                  "pm.test('U-04 · id is auto-generated and not empty', function () {",
+                  "  pm.expect(res.data.id).to.be.a('string').and.to.not.be.empty;",
+                  "});",
+                  "pm.test('U-04 · email matches request', function () {",
+                  "  pm.expect(res.data.email).to.eql('newqa@vaultx.io');",
+                  "});",
+                  "pm.test('U-04 · name matches request', function () {",
+                  "  pm.expect(res.data.name).to.eql('New QA');",
+                  "});",
+                  "pm.test('U-04 · avatar initials are auto-generated', function () {",
+                  "  pm.expect(res.data.avatar).to.be.a('string').and.to.not.be.empty;",
+                  "});",
+                  "pm.test('U-04 · role is set correctly', function () {",
+                  "  pm.expect(res.data.role).to.eql('QA Intern');",
+                  "});",
+                  "pm.test('U-04 · password is not exposed in response', function () {",
+                  "  pm.expect(res.data).to.not.have.property('password');",
+                  "});",
+                  "if (res.data && res.data.id) {",
+                  "  pm.environment.set('createdUserId', res.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"newqa@vaultx.io\",\n  \"password\": \"Secure@123\",\n  \"name\": \"New QA\",\n  \"role\": \"QA Intern\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "U-04b · Create User — Malformed Email Format",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('U-04b · Status is 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('U-04b · success is false', function () {",
+                  "  pm.expect(res.success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"bademail-format.com\",\n  \"password\": \"ValidPass123!\",\n  \"name\": \"Invalid Email User\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "U-04c · Create User — Weak Password Boundary",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('U-04c · Status is 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('U-04c · Rejects weak password entry', function () {",
+                  "  pm.expect(res.success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"weak@vaultx.io\",\n  \"password\": \"123\",\n  \"name\": \"Short Pass\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "U-05 · Create User — Duplicate Email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('U-05 · Status is 409', function () {",
+                  "  pm.response.to.have.status(409);",
+                  "});",
+                  "pm.test('U-05 · success is false', function () {",
+                  "  pm.expect(res.success).to.be.false;",
+                  "});",
+                  "pm.test('U-05 · error message is present', function () {",
+                  "  pm.expect(res.error).to.be.a('string').and.to.not.be.empty;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"qa@vaultx.io\",\n  \"password\": \"Test@1234\",\n  \"name\": \"Jordan Duplicate\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "U-06 · Create User — Missing Required Fields",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('U-06 · Status is 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('U-06 · success is false', function () {",
+                  "  pm.expect(res.success).to.be.false;",
+                  "});",
+                  "pm.test('U-06 · error message is present', function () {",
+                  "  pm.expect(res.error).to.be.a('string').and.to.not.be.empty;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"incomplete@vaultx.io\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "U-07 · Update User — Name and Role",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('U-07 · Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('U-07 · success is true', function () {",
+                  "  pm.expect(res.success).to.be.true;",
+                  "});",
+                  "pm.test('U-07 · name is updated', function () {",
+                  "  pm.expect(res.data.name).to.eql('Jordan Okafor Senior');",
+                  "});",
+                  "pm.test('U-07 · role is updated', function () {",
+                  "  pm.expect(res.data.role).to.eql('QA Lead');",
+                  "});",
+                  "pm.test('U-07 · id is unchanged', function () {",
+                  "  pm.expect(res.data.id).to.eql('user_001');",
+                  "});",
+                  "pm.test('U-07 · avatar is regenerated (non-empty string)', function () {",
+                  "  pm.expect(res.data.avatar).to.be.a('string').and.to.not.be.empty;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jordan Okafor Senior\",\n  \"role\": \"QA Lead\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/user_001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "user_001"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "U-07b · Update User — Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('U-07b · Status is 404', function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test('U-07b · success is false', function () {",
+                  "  pm.expect(pm.response.json().success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ghost User\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/user_999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "user_999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "U-08 · Delete User — Exists",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('U-08 · Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('U-08 · success is true', function () {",
+                  "  pm.expect(res.success).to.be.true;",
+                  "});",
+                  "pm.test('U-08 · message confirms deletion of user_002', function () {",
+                  "  pm.expect(res.message).to.include('user_002');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/user_002",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "user_002"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "U-08b · Delete User — Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('U-08b · Status is 404', function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test('U-08b · success is false', function () {",
+                  "  pm.expect(pm.response.json().success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/user_999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "user_999"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Wallets",
+      "item": [
+        {
+          "name": "W-01 · Get All Wallets",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('W-01 · Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('W-01 · success is true', function () {",
+                  "  pm.expect(res.success).to.be.true;",
+                  "});",
+                  "pm.test('W-01 · data is an array', function () {",
+                  "  pm.expect(res.data).to.be.an('array');",
+                  "});",
+                  "pm.test('W-01 · count equals 6 on seed data', function () {",
+                  "  pm.expect(res.count).to.eql(6);",
+                  "});",
+                  "pm.test('W-01 · each wallet has id, userId, symbol, balance fields', function () {",
+                  "  res.data.forEach(w => {",
+                  "    pm.expect(w).to.include.keys(['id','userId','symbol','balance']);",
+                  "  });",
+                  "});",
+                  "pm.test('W-01 · balance is a number on every wallet', function () {",
+                  "  res.data.forEach(w => {",
+                  "    pm.expect(w.balance).to.be.a('number');",
+                  "  });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/wallets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wallets"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "W-02 · Get Wallets — Filter by userId (user_001)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('W-02 · Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('W-02 · count equals 4', function () {",
+                  "  pm.expect(res.count).to.eql(4);",
+                  "});",
+                  "pm.test('W-02 · all wallets belong to user_001', function () {",
+                  "  res.data.forEach(w => pm.expect(w.userId).to.eql('user_001'));",
+                  "});",
+                  "pm.test('W-02 · wallet symbols include BTC, ETH, USDT, SOL', function () {",
+                  "  const symbols = res.data.map(w => w.symbol);",
+                  "  ['BTC','ETH','USDT','SOL'].forEach(s => pm.expect(symbols).to.include(s));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/wallets?userId=user_001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wallets"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "user_001"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "W-03 · Get Wallet by ID — Exists",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('W-03 · Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('W-03 · id is w1', function () {",
+                  "  pm.expect(res.data.id).to.eql('w1');",
+                  "});",
+                  "pm.test('W-03 · symbol is BTC', function () {",
+                  "  pm.expect(res.data.symbol).to.eql('BTC');",
+                  "});",
+                  "pm.test('W-03 · userId is user_001', function () {",
+                  "  pm.expect(res.data.userId).to.eql('user_001');",
+                  "});",
+                  "pm.test('W-03 · balance is a positive number', function () {",
+                  "  pm.expect(res.data.balance).to.be.a('number').and.to.be.above(0);",
+                  "});",
+                  "pm.test('W-03 · usdRate is a positive number', function () {",
+                  "  pm.expect(res.data.usdRate).to.be.a('number').and.to.be.above(0);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/wallets/w1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wallets",
+                "w1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "W-03b · Get Wallet by ID — Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('W-03b · Status is 404', function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});",
+                  "W-03b · success is false', function () {",
+                  "  pm.expect(pm.response.json().success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/wallets/w999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wallets",
+                "w999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "W-04 · Create Wallet — Valid",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('W-04 · Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test('W-04 · success is true', function () {",
+                  "  pm.expect(res.success).to.be.true;",
+                  "});",
+                  "pm.test('W-04 · id is auto-generated', function () {",
+                  "  pm.expect(res.data.id).to.be.a('string').and.to.not.be.empty;",
+                  "});",
+                  "pm.test('W-04 · userId is user_001', function () {",
+                  "  pm.expect(res.data.userId).to.eql('user_001');",
+                  "});",
+                  "pm.test('W-04 · symbol is BNB', function () {",
+                  "  pm.expect(res.data.symbol).to.eql('BNB');",
+                  "});",
+                  "pm.test('W-04 · balance is 10', function () {",
+                  "  pm.expect(res.data.balance).to.eql(10);",
+                  "});",
+                  "pm.test('W-04 · address is auto-generated if not provided', function () {",
+                  "  pm.expect(res.data.address).to.be.a('string').and.to.not.be.empty;",
+                  "});",
+                  "if (res.data && res.data.id) {",
+                  "  pm.environment.set('createdWalletId', res.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"user_001\",\n  \"symbol\": \"BNB\",\n  \"name\": \"BNB Chain\",\n  \"balance\": 10,\n  \"usdRate\": 580,\n  \"color\": \"#F3BA2F\",\n  \"icon\": \"⬡\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/wallets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wallets"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "W-04b · Create Wallet — Negative Balance Boundary Error",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('W-04b · Status is 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('W-04b · Blocks negative crypto wallet balance setup', function () {",
+                  "  pm.expect(res.success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"user_001\",\n  \"symbol\": \"DOT\",\n  \"name\": \"Polkadot\",\n  \"balance\": -55.5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/wallets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wallets"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "W-05 · Create Wallet — Non-Existent User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('W-05 · Status is 404', function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test('W-05 · success is false', function () {",
+                  "  pm.expect(pm.response.json().success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"user_999\",\n  \"symbol\": \"BNB\",\n  \"name\": \"BNB Chain\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/wallets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wallets"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "W-05b · Create Wallet — Missing Required Fields",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('W-05b · Status is 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('W-05b · success is false', function () {",
+                  "  pm.expect(pm.response.json().success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"user_001\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/wallets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wallets"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "W-06 · Update Wallet — Balance",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('W-06 · Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('W-06 · success is true', function () {",
+                  "  pm.expect(res.success).to.be.true;",
+                  "});",
+                  "pm.test('W-06 · balance is updated to 2.5', function () {",
+                  "  pm.expect(res.data.balance).to.eql(2.5);",
+                  "});",
+                  "pm.test('W-06 · id is still w1', function () {",
+                  "  pm.expect(res.data.id).to.eql('w1');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"balance\": 2.5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/wallets/w1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wallets",
+                "w1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "W-06b · Update Wallet — Invalid String Type for Balance",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('W-06b · Status is 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('W-06b · success is false', function () {",
+                  "  pm.expect(res.success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"balance\": \"one-hundred-dollars\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/wallets/w1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wallets",
+                "w1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "W-07 · Update Wallet — USD Rate",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('W-07 · Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('W-07 · usdRate is updated to 70000', function () {",
+                  "  pm.expect(res.data.usdRate).to.eql(70000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usdRate\": 70000\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/wallets/w1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wallets",
+                "w1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "W-07b · Update Wallet — Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('W-07b · Status is 404', function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test('W-07b · success is false', function () {",
+                  "  pm.expect(pm.response.json().success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"balance\": 1.0\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/wallets/w999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wallets",
+                "w999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "W-08 · Delete Wallet — Exists",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('W-08 · Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('W-08 · success is true', function () {",
+                  "  pm.expect(res.success).to.be.true;",
+                  "});",
+                  "pm.test('W-08 · message confirms deletion of w4', function () {",
+                  "  pm.expect(res.message).to.include('w4');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/wallets/w4",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wallets",
+                "w4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "W-08b · Delete Wallet — Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('W-08b · Status is 404', function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test('W-08b · success is false', function () {",
+                  "  pm.expect(pm.response.json().success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/wallets/w999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wallets",
+                "w999"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "item": [
+        {
+          "name": "T-01 · Get All Transactions",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('T-01 · Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('T-01 · success is true', function () {",
+                  "  pm.expect(res.success).to.be.true;",
+                  "});",
+                  "pm.test('T-01 · data is an array', function () {",
+                  "  pm.expect(res.data).to.be.an('array');",
+                  "});",
+                  "pm.test('T-01 · seed total is 9', function () {",
+                  "  pm.expect(res.total).to.eql(9);",
+                  "});",
+                  "pm.test('T-01 · pagination fields present: total, limit, offset', function () {",
+                  "  pm.expect(res).to.include.keys(['total','limit','offset']);",
+                  "});",
+                  "pm.test('T-01 · transactions sorted newest first', function () {",
+                  "  const dates = res.data.map(t => new Date(t.date).getTime());",
+                  "  for (let i = 0; i < dates.length - 1; i++) {",
+                  "    pm.expect(dates[i]).to.be.at.least(dates[i + 1]);",
+                  "  }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "transactions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "T-01b · List Transactions — Extreme Pagination Limit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('T-01b · Status is 200 or 400', function () {",
+                  "  pm.expect(pm.response.code).to.be.oneOf([200, 400]);",
+                  "});",
+                  "if(pm.response.code === 200) {",
+                  "  pm.test('T-01b · Handles max result set encapsulation cleanly', function () {",
+                  "    pm.expect(res.data).to.be.an('array');",
+                  "  });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions?limit=99999&offset=0",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "transactions"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "99999"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "T-02 · Get Transactions — Filter by userId",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('T-02 · Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('T-02 · count is 8 for user_001', function () {",
+                  "  pm.expect(res.count).to.eql(8);",
+                  "});",
+                  "pm.test('T-02 · all results belong to user_001', function () {",
+                  "  res.data.forEach(t => pm.expect(t.userId).to.eql('user_001'));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions?userId=user_001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "transactions"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "user_001"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "T-03 · Get Transactions — Filter by status=pending",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('T-03 · Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('T-03 · all results have status=pending', function () {",
+                  "  res.data.forEach(t => pm.expect(t.status).to.eql('pending'));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions?status=pending",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "transactions"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "pending"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "T-04 · Get Transactions — Filter by asset=BTC",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('T-04 · Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('T-04 · all results have asset=BTC', function () {",
+                  "  res.data.forEach(t => pm.expect(t.asset).to.eql('BTC'));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions?asset=BTC",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "transactions"
+              ],
+              "query": [
+                {
+                  "key": "asset",
+                  "value": "BTC"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "T-05 · Get Transactions — Pagination limit=3",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('T-05 · Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('T-05 · data array has at most 3 items', function () {",
+                  "  pm.expect(res.data.length).to.be.at.most(3);",
+                  "});",
+                  "pm.test('T-05 · total reflects full unfiltered count (9)', function () {",
+                  "  pm.expect(res.total).to.eql(9);",
+                  "});",
+                  "pm.test('T-05 · limit echoed back as 3', function () {",
+                  "  pm.expect(res.limit).to.eql(3);",
+                  "});",
+                  "pm.test('T-05 · offset echoed back as 0', function () {",
+                  "  pm.expect(res.offset).to.eql(0);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions?limit=3&offset=0",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "transactions"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "3"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "T-06 · Get Transaction by ID — Exists",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('T-06 · Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('T-06 · id is tx001', function () {",
+                  "  pm.expect(res.data.id).to.eql('tx001');",
+                  "});",
+                  "pm.test('T-06 · required fields present: type, asset, amount, status, date', function () {",
+                  "  pm.expect(res.data).to.include.keys(['type','asset','amount','status','date','userId']);",
+                  "});",
+                  "pm.test('T-06 · amount is a positive number', function () {",
+                  "  pm.expect(res.data.amount).to.be.a('number').and.to.be.above(0);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions/tx001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "transactions",
+                "tx001"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "T-06b · Get Transaction by ID — Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('T-06b · Status is 404', function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test('T-06b · success is false', function () {",
+                  "  pm.expect(pm.response.json().success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions/tx999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "transactions",
+                "tx999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "T-07 · Create Transaction — Receive",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('T-07 · Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test('T-07 · success is true', function () {",
+                  "  pm.expect(res.success).to.be.true;",
+                  "});",
+                  "pm.test('T-07 · id is auto-generated', function () {",
+                  "  pm.expect(res.data.id).to.be.a('string').and.to.not.be.empty;",
+                  "});",
+                  "pm.test('T-07 · type is receive', function () {",
+                  "  pm.expect(res.data.type).to.eql('receive');",
+                  "});",
+                  "pm.test('T-07 · asset is ETH', function () {",
+                  "  pm.expect(res.data.asset).to.eql('ETH');",
+                  "});",
+                  "pm.test('T-07 · amount is 2', function () {",
+                  "  pm.expect(res.data.amount).to.eql(2);",
+                  "});",
+                  "pm.test('T-07 · usdValue is a positive number', function () {",
+                  "  pm.expect(res.data.usdValue).to.be.a('number').and.to.be.above(0);",
+                  "});",
+                  "pm.test('T-07 · status is pending', function () {",
+                  "  pm.expect(res.data.status).to.eql('pending');",
+                  "});",
+                  "pm.test('T-07 · date field is present', function () {",
+                  "  pm.expect(res.data.date).to.be.a('string').and.to.not.be.empty;",
+                  "});",
+                  "if (res.data && res.data.id) {",
+                  "  pm.environment.set('createdTxId', res.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"user_001\",\n  \"type\": \"receive\",\n  \"asset\": \"ETH\",\n  \"amount\": 2.0,\n  \"from\": \"0xABCD1234\",\n  \"note\": \"Staking reward\",\n  \"status\": \"pending\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "transactions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "T-07b · Create Transaction — Zero Amount Boundary Error",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('T-07b · Status is 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('T-07b · Blocks processing zero amount transactions', function () {",
+                  "  pm.expect(res.success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"user_001\",\n  \"type\": \"receive\",\n  \"asset\": \"ETH\",\n  \"amount\": 0\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "transactions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "T-07c · Create Transaction — Negative Value Injection",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('T-07c · Status is 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('T-07c · Rejects negative currency value', function () {",
+                  "  pm.expect(res.success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"user_001\",\n  \"type\": \"receive\",\n  \"asset\": \"BTC\",\n  \"amount\": -1.5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "transactions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "T-08 · Create Transaction — Send",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('T-08 · Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test('T-08 · type is send', function () {",
+                  "  pm.expect(res.data.type).to.eql('send');",
+                  "});",
+                  "pm.test('T-08 · asset is BTC', function () {",
+                  "  pm.expect(res.data.asset).to.eql('BTC');",
+                  "});",
+                  "pm.test('T-08 · amount is 0.1', function () {",
+                  "  pm.expect(res.data.amount).to.eql(0.1);",
+                  "});",
+                  "pm.test('T-08 · usdValue is a positive number', function () {",
+                  "  pm.expect(res.data.usdValue).to.be.a('number').and.to.be.above(0);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"user_001\",\n  \"type\": \"send\",\n  \"asset\": \"BTC\",\n  \"amount\": 0.1,\n  \"to\": \"1A1zP1eP5QGefi2DMPTfTL5SLmv7Divf1n\",\n  \"note\": \"Payment\",\n  \"status\": \"pending\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "transactions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "T-09 · Create Transaction — Insufficient Balance (422)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('T-09 · Status is 422', function () {",
+                  "  pm.response.to.have.status(422);",
+                  "});",
+                  "pm.test('T-09 · success is false', function () {",
+                  "  pm.expect(res.success).to.be.false;",
+                  "});",
+                  "pm.test('T-09 · error message mentions insufficient balance', function () {",
+                  "  pm.expect(res.error.toLowerCase()).to.include('balance');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"user_001\",\n  \"type\": \"send\",\n  \"asset\": \"BTC\",\n  \"amount\": 9999,\n  \"to\": \"1A1zP1eP5QGefi2DMPTfTL5SLmv7Divf1n\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "transactions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "T-10 · Create Transaction — Invalid Asset",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('T-10 · Status is 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('T-10 · success is false', function () {",
+                  "  pm.expect(res.success).to.be.false;",
+                  "});",
+                  "pm.test('T-10 · error message is present', function () {",
+                  "  pm.expect(res.error).to.be.a('string').and.to.not.be.empty;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"user_001\",\n  \"type\": \"receive\",\n  \"asset\": \"DOGE\",\n  \"amount\": 100\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "transactions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "T-10b · Create Transaction — Missing Required Fields",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('T-10b · Status is 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('T-10b · success is false', function () {",
+                  "  pm.expect(pm.response.json().success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"user_001\",\n  \"type\": \"send\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "transactions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "T-11 · Update Transaction — pending → completed",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('T-11 · Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('T-11 · success is true', function () {",
+                  "  pm.expect(res.success).to.be.true;",
+                  "});",
+                  "pm.test('T-11 · status is now completed', function () {",
+                  "  pm.expect(res.data.status).to.eql('completed');",
+                  "});",
+                  "pm.test('T-11 · id is still tx003', function () {",
+                  "  pm.expect(res.data.id).to.eql('tx003');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions/tx003",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "transactions",
+                "tx003"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "T-12 · Update Transaction — Invalid Status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('T-12 · Status is 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('T-12 · success is false', function () {",
+                  "  pm.expect(res.success).to.be.false;",
+                  "});",
+                  "pm.test('T-12 · error message is present', function () {",
+                  "  pm.expect(res.error).to.be.a('string').and.to.not.be.empty;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"approved\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions/tx001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "transactions",
+                "tx001"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "T-13 · Delete Transaction — Exists",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('T-13 · Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('T-13 · success is true', function () {",
+                  "  pm.expect(res.success).to.be.true;",
+                  "});",
+                  "pm.test('T-13 · message confirms deletion of tx008', function () {",
+                  "  pm.expect(res.message).to.include('tx008');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions/tx008",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "transactions",
+                "tx008"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "T-13b · Delete Transaction — Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('T-13b · Status is 404', function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test('T-13b · success is false', function () {",
+                  "  pm.expect(pm.response.json().success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions/tx999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "transactions",
+                "tx999"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://vault-api-dhun.onrender.com"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ]
+}
